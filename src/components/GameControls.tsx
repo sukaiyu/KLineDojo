@@ -62,12 +62,12 @@ export const GameControls: React.FC<GameControlsProps> = ({ onStartGame, onReset
   return (
     <div className="card">
       {/* 游戏控制按钮 */}
-      <div className="flex flex-wrap items-center justify-center gap-3">
+      <div className="flex items-center justify-center gap-1 sm:gap-3 overflow-x-auto py-1">
         {isPlaying && !isGameOver() && (
           <>
             <button
               onClick={isPaused ? resumeGame : pauseGame}
-              className="btn-secondary py-2 px-4"
+              className="btn-secondary py-2 px-2 sm:px-4 text-sm sm:text-base whitespace-nowrap flex-shrink-0"
               title="空格键: 暂停/继续游戏"
             >
               {isPaused ? '继续' : '暂停'}
@@ -76,7 +76,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ onStartGame, onReset
             {isPaused && (
               <button
                 onClick={nextKLine}
-                className="btn-primary py-2 px-4"
+                className="btn-primary py-2 px-2 sm:px-4 text-sm sm:text-base whitespace-nowrap flex-shrink-0"
                 title="→键: 推进一根K线"
               >
                 下一日
@@ -85,7 +85,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ onStartGame, onReset
             
             <button
               onClick={handleSpeedChange}
-              className="btn-secondary py-2 px-4"
+              className="btn-secondary py-2 px-2 sm:px-4 text-sm sm:text-base whitespace-nowrap flex-shrink-0"
               title="1/2/3键: 调整游戏速度"
             >
               {gameSpeed}x
@@ -96,7 +96,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ onStartGame, onReset
         {!isPlaying && (
           <button
             onClick={onStartGame}
-            className="btn-primary"
+            className="btn-primary py-2 px-4 sm:px-6 text-sm sm:text-base whitespace-nowrap flex-shrink-0"
           >
             开始游戏
           </button>
@@ -105,7 +105,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ onStartGame, onReset
         {isPlaying && (
           <button
             onClick={handleResetClick}
-            className="btn-secondary py-2 px-4"
+            className="btn-secondary py-2 px-2 sm:px-4 text-sm sm:text-base whitespace-nowrap flex-shrink-0"
           >
             重新开始
           </button>
