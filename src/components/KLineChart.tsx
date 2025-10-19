@@ -1,9 +1,8 @@
-import React, { useEffect, useRef, useMemo } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { createChart, IChartApi, ISeriesApi, CandlestickData, HistogramData, LineData, Time } from 'lightweight-charts';
 import { useGameStore } from '../stores/gameStore';
 import { KLineData } from '../types/game';
 import { formatTime } from '../utils/dataLoader';
-import { MACD } from 'technicalindicators';
 import { KLineNotificationContainer } from './Notification';
 
 // 日志配置
@@ -47,16 +46,12 @@ export const KLineChart: React.FC<KLineChartProps> = ({
 }) => {
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const volumeChartRef = useRef<HTMLDivElement>(null);
-  const macdChartRef = useRef<HTMLDivElement>(null);
   
   const chartRef = useRef<IChartApi | null>(null);
   const volumeChartRef_api = useRef<IChartApi | null>(null);
-  const macdChartRef_api = useRef<IChartApi | null>(null);
   
   const seriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
   const volumeSeriesRef = useRef<ISeriesApi<'Histogram'> | null>(null);
-  const macdSeriesRef = useRef<ISeriesApi<'Histogram'> | null>(null);
-  const signalSeriesRef = useRef<ISeriesApi<'Line'> | null>(null);
   const costLineSeriesRef = useRef<ISeriesApi<'Line'> | null>(null);
   const buyOrderLineSeriesRef = useRef<ISeriesApi<'Line'> | null>(null);
   const sellOrderLineSeriesRef = useRef<ISeriesApi<'Line'> | null>(null);
@@ -257,108 +252,7 @@ export const KLineChart: React.FC<KLineChartProps> = ({
     };
   }, [height]);
 
-  // 初始化MACD图表
-  useEffect(() => {
-    if (!macdChartRef.current || !chartRef.current) return;
 
-    // 创建MACD图表 (占25%高度)，使用主图表的时间轴
-    const macdChart = createChart(macdChartRef.current, {
-      width,
-      height: height * 0.25,
-      layout: {
-        background: { color: '#161b22' },
-        textColor: '#c9d1d9',
-      },
-      grid: {
-        vertLines: { color: '#30363d' },
-        horzLines: { color: '#30363d' },
-      },
-      rightPriceScale: {
-        borderColor: '#30363d',
-      },
-      timeScale: {
-        borderColor: '#30363d',
-        timeVisible: true,
-        secondsVisible: false,
-      },
-      // 禁用独立的缩放和平移，将使用主图表的时间轴
-      handleScroll: {
-        mouseWheel: false,
-        pressedMouseMove: false,
-        horzTouchDrag: false,
-        vertTouchDrag: false,
-      },
-      handleScale: {
-        axisPressedMouseMove: false,
-        mouseWheel: false,
-        pinch: false,
-      },
-      // 隐藏TradingView水印和链接
-      // attributionLogo: false, // 移除不支持的属性
-      // 禁用水印点击事件
-      // event: {
-      //   click: false,
-      // },
-    });
-
-    // 添加MACD柱状图系列
-    const macdSeries = macdChart.addHistogramSeries({
-      color: '#3b82f6',
-      priceFormat: {
-        type: 'price',
-        precision: 4,
-      },
-    });
-
-    // 添加MACD信号线系列
-    const signalSeries = macdChart.addLineSeries({
-      color: '#f59e0b',
-      lineWidth: 2,
-    });
-
-    macdChartRef_api.current = macdChart;
-    macdSeriesRef.current = macdSeries;
-    signalSeriesRef.current = signalSeries;
-
-    // 响应式调整
-    const handleResize = () => {
-      if (macdChartRef.current) {
-        const containerWidth = macdChartRef.current.clientWidth;
-        macdChart.applyOptions({ width: containerWidth });
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-    handleResize();
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-      macdChart.remove();
-    };
-  }, [height]);
-
-  // 计算MACD指标
-  const macdData = useMemo(() => {
-    if (!currentETF || currentETF.data.length < 26) return null;
-    
-    const closes = currentETF.data.map(item => item.close);
-    const macdInput = {
-      values: closes,
-      fastPeriod: 12,
-      slowPeriod: 26,
-      signalPeriod: 9,
-      SimpleMAOscillator: false,
-      SimpleMASignal: false,
-    };
-    
-    try {
-      const macdResult = MACD.calculate(macdInput);
-      return macdResult;
-    } catch (error) {
-      console.error('MACD计算错误:', error);
-      return null;
-    }
-  }, [currentETF]);
 
   // 更新图表数据
   useEffect(() => {
@@ -576,78 +470,6 @@ export const KLineChart: React.FC<KLineChartProps> = ({
       // 成交量图跟随主图，不需要独立滚动
     }
 
-    // 更新MACD数据
-    if (macdData && macdSeriesRef.current && signalSeriesRef.current) {
-      // 数据加载时已经包含了26个历史数据点，这些数据点从索引0开始
-      // 游戏实际开始位置是索引26，但我们要显示从索引0开始的所有数据
-      const gameStartIndex = 26;
-      
-      const macdHistogramData: HistogramData[] = [];
-      const signalLineData: LineData[] = [];
-      
-      // 遍历所有显示的K线数据（从startIndex开始）
-      for (let i = startIndex; i < endIndex; i++) {
-        const klineData = currentETF.data[i];
-        
-        if (!klineData) continue;
-        
-        let timeValue: Time;
-        try {
-          const date = new Date(klineData.time);
-          if (isNaN(date.getTime())) {
-            timeValue = klineData.time as Time;
-          } else {
-            timeValue = Math.floor(date.getTime() / 1000) as Time;
-          }
-        } catch {
-          timeValue = klineData.time as Time;
-        }
-        
-        // 计算对应的MACD数据索引
-        // 如果i < 26，说明是历史数据，没有MACD值
-        // 如果i >= 26，MACD索引 = i - 26
-        if (i >= gameStartIndex) {
-          const macdIndex = i - gameStartIndex;
-          
-          if (macdIndex >= 0 && macdIndex < macdData.length) {
-            const macdItem = macdData[macdIndex];
-            
-            if (macdItem) {
-              // MACD柱状图 (MACD - Signal)
-              const histogramValue = (macdItem.MACD || 0) - (macdItem.signal || 0);
-              macdHistogramData.push({
-                time: timeValue,
-                value: histogramValue,
-                color: histogramValue >= 0 ? '#22c55e' : '#ef4444',
-              });
-              
-              // 信号线
-              signalLineData.push({
-                time: timeValue,
-                value: macdItem.signal || 0,
-              });
-            }
-          }
-        } else {
-          // 前26个数据点没有MACD数据，添加空值保持时间轴对齐
-          macdHistogramData.push({
-            time: timeValue,
-            value: 0,
-            color: 'transparent',
-          });
-          
-          signalLineData.push({
-            time: timeValue,
-            value: 0,
-          });
-        }
-      }
-      
-      macdSeriesRef.current.setData(macdHistogramData);
-      signalSeriesRef.current.setData(signalLineData);
-      
-      // MACD图跟随主图，不需要独立滚动
-    }
 
     // 更新成本线 - 修复撤单后的Y轴问题
     if (costLineSeriesRef.current) {
@@ -752,29 +574,25 @@ export const KLineChart: React.FC<KLineChartProps> = ({
       // 清空卖出委托价线
       sellOrderLineSeriesRef.current.setData([]);
     }
-  }, [currentETF, currentDataIndex, trades, macdData, position, positionCost, orders]);
+  }, [currentETF, currentDataIndex, trades, position, positionCost, orders]);
 
   // 时间轴同步功能
   useEffect(() => {
-    if (!chartRef.current || !volumeChartRef_api.current || !macdChartRef_api.current) return;
+    if (!chartRef.current || !volumeChartRef_api.current) return;
 
     const mainChart = chartRef.current;
     const volumeChart = volumeChartRef_api.current;
-    const macdChart = macdChartRef_api.current;
 
     // 同步时间轴变化的函数
     const syncTimeScale = () => {
       const mainTimeScale = mainChart.timeScale();
       const volumeTimeScale = volumeChart.timeScale();
-      const macdTimeScale = macdChart.timeScale();
 
       // 获取主图表的时间范围
       const timeRange = mainTimeScale.getVisibleLogicalRange();
       if (timeRange) {
         // 同步到成交量图表
         volumeTimeScale.setVisibleLogicalRange(timeRange);
-        // 同步到MACD图表
-        macdTimeScale.setVisibleLogicalRange(timeRange);
       }
     };
 
@@ -967,20 +785,6 @@ export const KLineChart: React.FC<KLineChartProps> = ({
         />
       </div>
 
-      {/* MACD图容器 */}
-      <div className="mb-4">
-        <div className="text-sm text-gray-400 mb-1 flex items-center">
-          <div className="w-3 h-3 bg-blue-500 mr-1"></div>
-          MACD
-          <div className="w-3 h-3 bg-amber-500 ml-2 mr-1"></div>
-          信号线
-        </div>
-        <div
-          ref={macdChartRef}
-          className="w-full border border-gray-700 rounded"
-          style={{ height: `${height * 0.25}px` }}
-        />
-      </div>
 
     </div>
   );
