@@ -755,21 +755,23 @@ export const KLineChart: React.FC<KLineChartProps> = ({
 
       {/* K线图容器 */}
       <div className="mb-2 relative">
-        <div className="text-sm text-gray-400 mb-1">K线图</div>
+        <div className="flex items-center justify-between text-sm text-gray-400 mb-1">
+          <span>K线图</span>
+          
+          {/* 暂停状态提示 - 放在标题行右侧，更小更不显眼 */}
+          {isPlaying && isPaused && (
+            <div className="bg-yellow-600 bg-opacity-80 text-white px-2 py-1 rounded text-xs flex items-center space-x-1 shadow-md">
+              <div className="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
+              <span className="font-medium">已暂停</span>
+              <span className="opacity-75 hidden sm:inline">(→继续)</span>
+            </div>
+          )}
+        </div>
         <div
           ref={chartContainerRef}
           className="w-full border border-gray-700 rounded"
           style={{ height: `${height * 0.5}px` }}
         />
-        
-        {/* 暂停状态常驻悬浮提示 */}
-        {isPlaying && isPaused && (
-          <div className="absolute top-8 left-1/2 transform -translate-x-1/2 bg-yellow-600 bg-opacity-90 text-white px-4 py-2 rounded-lg shadow-lg z-10 flex items-center space-x-2">
-            <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-            <span className="font-medium">游戏已暂停</span>
-            <span className="text-sm opacity-75">(按→键或点击下一日继续)</span>
-          </div>
-        )}
       </div>
 
       {/* 成交量图容器 */}
