@@ -60,7 +60,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ onStartGame, onReset
   };
 
   return (
-    <>
+    <div className="card">
       {/* 游戏控制按钮 */}
       <div className="flex items-center justify-center gap-0.5 sm:gap-2 py-2">
         {isPlaying && !isGameOver() && (
@@ -137,6 +137,6 @@ export const GameControls: React.FC<GameControlsProps> = ({ onStartGame, onReset
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
