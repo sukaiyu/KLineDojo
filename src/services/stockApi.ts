@@ -40,13 +40,30 @@ class StockApiServiceImpl implements StockApiService {
   private initialized = false;
 
   /**
+   * 获取基础路径，支持GitHub Pages部署
+   */
+  private getBasePath(): string {
+    // 在生产环境中，从window.location获取base路径
+    if (typeof window !== 'undefined') {
+      const pathname = window.location.pathname;
+      if (pathname.includes('/KLineDojo/')) {
+        return '/KLineDojo/';
+      }
+    }
+    // 开发环境或其他情况
+    return '/';
+  }
+
+  /**
    * 初始化，加载股票列表
    */
   private async initialize(): Promise<void> {
     if (this.initialized) return;
 
     try {
-      const response = await fetch('/data/stock-list.json');
+      // 获取base路径，支持GitHub Pages部署
+      const basePath = this.getBasePath();
+      const response = await fetch(`${basePath}data/stock-list.json`);
       if (response.ok) {
         const stockListData: StockListResponse = await response.json();
         this.stockList = stockListData.stocks;
@@ -76,7 +93,9 @@ class StockApiServiceImpl implements StockApiService {
    */
   async getStockData(stockCode: string, startDate: string, endDate?: string): Promise<KLineData[]> {
     try {
-      const response = await fetch(`/data/stocks/${stockCode}.json`);
+      // 获取base路径，支持GitHub Pages部署
+      const basePath = this.getBasePath();
+      const response = await fetch(`${basePath}data/stocks/${stockCode}.json`);
       
       if (!response.ok) {
         console.warn(`No data found for stock: ${stockCode}`);
