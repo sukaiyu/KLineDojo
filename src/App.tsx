@@ -191,11 +191,11 @@ function App() {
               <TradeButtons onShowMessage={showMessage} />
             </div>
 
-            {/* 账户信息 */}
-            <AccountInfo />
-
             {/* 委托单 */}
             <OrderPanel />
+
+            {/* 账户信息 */}
+            <AccountInfo />
           </div>
         </div>
 
