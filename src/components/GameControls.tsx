@@ -62,12 +62,12 @@ export const GameControls: React.FC<GameControlsProps> = ({ onStartGame, onReset
   return (
     <>
       {/* 游戏控制按钮 */}
-      <div className="flex gap-4 py-2">
+      <div className="flex gap-2 sm:gap-4 py-2">
         {isPlaying && !isGameOver() && (
           <>
             <button
               onClick={isPaused ? resumeGame : pauseGame}
-              className="btn-secondary flex-1"
+              className="btn-secondary flex-1 text-xs sm:text-sm md:text-base whitespace-nowrap"
               title="空格键: 暂停/继续游戏"
             >
               {isPaused ? '继续' : '暂停'}
@@ -76,7 +76,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ onStartGame, onReset
             {isPaused && (
               <button
                 onClick={nextKLine}
-                className="btn-primary flex-1"
+                className="btn-primary flex-1 text-xs sm:text-sm md:text-base whitespace-nowrap"
                 title="→键: 推进一根K线"
               >
                 下一日
@@ -85,7 +85,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ onStartGame, onReset
             
             <button
               onClick={handleSpeedChange}
-              className="btn-secondary flex-1"
+              className="btn-secondary flex-1 text-xs sm:text-sm md:text-base whitespace-nowrap"
               title="1/2/3键: 调整游戏速度"
             >
               {gameSpeed}x
@@ -96,7 +96,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ onStartGame, onReset
         {!isPlaying && (
           <button
             onClick={onStartGame}
-            className="btn-primary flex-1"
+            className="btn-primary flex-1 text-xs sm:text-sm md:text-base whitespace-nowrap"
           >
             开始游戏
           </button>
@@ -105,7 +105,7 @@ export const GameControls: React.FC<GameControlsProps> = ({ onStartGame, onReset
         {isPlaying && (
           <button
             onClick={handleResetClick}
-            className="btn-secondary flex-1"
+            className="btn-secondary flex-1 text-xs sm:text-sm md:text-base whitespace-nowrap"
           >
             重新开始
           </button>

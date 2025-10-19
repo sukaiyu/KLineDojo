@@ -731,24 +731,24 @@ export const KLineChart: React.FC<KLineChartProps> = ({
       {/* 价格信息 */}
       {priceInfo && (
         <div className="mb-4 flex flex-wrap items-center justify-between">
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4">
             <div>
-              <span className="text-gray-400 text-sm">当前价格</span>
-              <div className={`text-2xl font-bold ${priceInfo.isUp ? 'price-up' : 'price-down'}`}>
+              <span className="text-gray-400 text-xs sm:text-sm whitespace-nowrap">当前价格</span>
+              <div className={`text-lg sm:text-xl md:text-2xl font-bold ${priceInfo.isUp ? 'price-up' : 'price-down'} whitespace-nowrap`}>
                 ¥{priceInfo.price.toFixed(3)}
               </div>
             </div>
             <div>
-              <span className="text-gray-400 text-sm">涨跌</span>
-              <div className={`text-lg font-semibold ${priceInfo.isUp ? 'price-up' : 'price-down'}`}>
+              <span className="text-gray-400 text-xs sm:text-sm whitespace-nowrap">涨跌</span>
+              <div className={`text-sm sm:text-base md:text-lg font-semibold ${priceInfo.isUp ? 'price-up' : 'price-down'} whitespace-nowrap`}>
                 {priceInfo.isUp ? '+' : ''}{priceInfo.change.toFixed(3)} 
                 ({priceInfo.isUp ? '+' : ''}{priceInfo.changePercent.toFixed(2)}%)
               </div>
             </div>
           </div>
           <div className="text-right">
-            <div className="text-gray-400 text-sm">{priceInfo.time}</div>
-            <div className="text-sm">成交量: {priceInfo.volume.toLocaleString()}</div>
+            <div className="text-gray-400 text-xs sm:text-sm whitespace-nowrap">{priceInfo.time}</div>
+            <div className="text-xs sm:text-sm whitespace-nowrap">成交量: {priceInfo.volume.toLocaleString()}</div>
           </div>
         </div>
       )}
