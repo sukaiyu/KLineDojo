@@ -331,6 +331,11 @@ export const TradeButtons: React.FC<TradeButtonsProps> = ({ onShowMessage }) => 
                     setShowBuyDialog(false);
                     setBuyQuantity('');
                     setBuyPrice('');
+                    // 恢复原来的游戏状态
+                    if (wasPlayingBeforeDialog) {
+                      resumeGame();
+                    }
+                    setWasPlayingBeforeDialog(false);
                   }}
                   className="flex-1 btn-secondary"
                 >
@@ -464,6 +469,11 @@ export const TradeButtons: React.FC<TradeButtonsProps> = ({ onShowMessage }) => 
                     setShowSellDialog(false);
                     setSellQuantity('');
                     setSellPrice('');
+                    // 恢复原来的游戏状态
+                    if (wasPlayingBeforeDialog) {
+                      resumeGame();
+                    }
+                    setWasPlayingBeforeDialog(false);
                   }}
                   className="flex-1 btn-secondary"
                 >
