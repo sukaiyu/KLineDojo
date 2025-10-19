@@ -2,6 +2,12 @@
 
 基于真实A股数据的K线交易训练游戏。
 
+## 🚀 在线体验
+
+[https://sukaiyu.github.io/KLineDojo/](https://sukaiyu.github.io/KLineDojo/)
+
+无需安装，直接在浏览器中体验完整的K线交易游戏！
+
 ## 功能特点
 
 - 🎯 **真实数据**: 使用真实的A股日K线数据，覆盖50只热门股票

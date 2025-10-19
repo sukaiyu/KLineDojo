@@ -10,7 +10,8 @@ lerna-debug.log*
 # Dependencies
 node_modules
 
-# Build outputs (exclude dist-ssr and build, but keep dist for GitHub Pages)
+# Build outputs
+dist
 dist-ssr
 build
 *.local
