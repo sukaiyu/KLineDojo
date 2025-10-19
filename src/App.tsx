@@ -196,8 +196,6 @@ function App() {
 
             {/* 委托单 */}
             <OrderPanel />
-
-
           </div>
         </div>
 
