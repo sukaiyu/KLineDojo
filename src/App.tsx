@@ -170,10 +170,10 @@ function App() {
         </div>
 
         {/* 主要内容区域 */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 xl:grid-cols-6 gap-6">
           {/* K线图区域 */}
-          <div className="lg:col-span-2">
-            <KLineChart height={500} />
+          <div className="lg:col-span-3 xl:col-span-5">
+            <KLineChart height={600} />
             
             {/* 游戏控制按钮 */}
             <div className="mt-6">
@@ -185,7 +185,7 @@ function App() {
           </div>
 
           {/* 侧边栏 */}
-          <div className="space-y-6">
+          <div className="lg:col-span-1 xl:col-span-1 space-y-6">
             {/* 交易按钮 */}
             <div>
               <TradeButtons onShowMessage={showMessage} />
